@@ -10,23 +10,28 @@
 namespace variadic
 {
 
-    template <typename ResultCollection, typename... Collections>
-    struct merge_frame;
-
-    template <typename ResultCollection>
-    struct merge_frame<ResultCollection>
+    namespace detail
     {
-        using types = ResultCollection;
-    };
 
-    template <typename ResultCollection, typename C0, typename... Collections>
-    struct merge_frame<ResultCollection, C0, Collections...>
-    {
-        using types = typename merge_frame<typename C0::template emplace<ResultCollection::template push_back>, Collections...>::types;
-    };
+        template <typename ResultCollection, typename... Collections>
+        struct merge_frame;
+
+        template <typename ResultCollection>
+        struct merge_frame<ResultCollection>
+        {
+            using types = ResultCollection;
+        };
+
+        template <typename ResultCollection, typename C0, typename... Collections>
+        struct merge_frame<ResultCollection, C0, Collections...>
+        {
+            using types = typename merge_frame<typename C0::template emplace<ResultCollection::template push_back>, Collections...>::types;
+        };
+
+    } // namespace detail
 
     template <typename... Collections>
-    using merge = typename merge_frame<collection<>, Collections...>::types;
+    using merge = typename detail::merge_frame<collection<>, Collections...>::types;
 
     template <typename... Types>
     struct merge_types

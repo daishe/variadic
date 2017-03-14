@@ -10,18 +10,26 @@
 namespace variadic
 {
 
-    template <typename... Types>
-    struct first;
-
-    template <>
-    struct first<>
-    {};
-
-    template <typename T, typename... Types>
-    struct first<T, Types...>
+    namespace detail
     {
-        using type = T;
-    };
+
+        template <typename... Types>
+        struct first_frame;
+
+        template <>
+        struct first_frame<>
+        {};
+
+        template <typename T, typename... Types>
+        struct first_frame<T, Types...>
+        {
+            using type = T;
+        };
+
+    } // namespace detail
+
+    template <typename... Types>
+    using first = detail::first_frame<Types...>;
 
     template <typename T, typename... Types>
     using not_first = collection<Types...>;

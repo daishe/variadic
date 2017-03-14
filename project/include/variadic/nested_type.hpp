@@ -8,21 +8,29 @@
 namespace variadic
 {
 
+    namespace detail
+    {
+
+        template <template <typename> typename ... Types>
+        struct nested_type;
+
+        template <>
+        struct nested_type<>
+        {
+            template <typename Y>
+            using type = Y;
+        };
+
+        template <template <typename> typename T, template <typename> typename ... Types>
+        struct nested_type<T, Types...>
+        {
+            template <typename Y>
+            using type = T<typename nested_type<Types...>::template type<Y>>;
+        };
+
+    } // namespace detail
+
     template <template <typename> typename ... Types>
-    struct nested_type;
-
-    template <>
-    struct nested_type<>
-    {
-        template <typename Y>
-        using type = Y;
-    };
-
-    template <template <typename> typename T, template <typename> typename ... Types>
-    struct nested_type<T, Types...>
-    {
-        template <typename Y>
-        using type = T<typename nested_type<Types...>::template type<Y>>;
-    };
+    using nested_type = detail::nested_type<Types...>;
 
 } // namespace variadic

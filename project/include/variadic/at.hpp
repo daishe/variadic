@@ -27,23 +27,28 @@ namespace variadic
     //     using type = typename at<Idx - 1, Types...>::type;
     // };
 
-    template <size_t Idx, typename = std::make_index_sequence<Idx>>
-    struct at_frame_impl;
-
-    template <size_t Idx, size_t... Ignore>
-    struct at_frame_impl<Idx, std::index_sequence<Ignore...>>
+    namespace detail
     {
-        template <typename T>
-        static T deducer(decltype((void*)Ignore)..., T*, ...);
-    };
 
-    template <size_t Idx, typename... Types>
-    using at_frame = decltype(at_frame_impl<Idx>::deducer(static_cast<type_frame<Types>*>(nullptr)...));
+        template <size_t Idx, typename = std::make_index_sequence<Idx>>
+        struct at_frame_impl;
+
+        template <size_t Idx, size_t... Ignore>
+        struct at_frame_impl<Idx, std::index_sequence<Ignore...>>
+        {
+            template <typename T>
+            static T deducer(decltype((void*)Ignore)..., T*, ...);
+        };
+
+        template <size_t Idx, typename... Types>
+        using at_frame = decltype(at_frame_impl<Idx>::deducer(static_cast<type_frame<Types>*>(nullptr)...));
+
+    } // namespace detail
 
     template <size_t Idx, typename... Types>
     struct at
     {
-        using type = typename at_frame<Idx, Types...>::type;
+        using type = typename detail::at_frame<Idx, Types...>::type;
     };
 
 } // namespace variadic

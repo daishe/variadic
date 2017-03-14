@@ -10,22 +10,27 @@
 namespace variadic
 {
 
-    template <typename ResultCollection, typename... Types>
-    struct reverse_frame;
-
-    template <typename ResultCollection>
-    struct reverse_frame<ResultCollection>
+    namespace detail
     {
-        using types = ResultCollection;
-    };
 
-    template <typename ResultCollection, typename T, typename... Types>
-    struct reverse_frame<ResultCollection, T, Types...>
-    {
-        using types = typename reverse_frame<typename ResultCollection::template push_front<T>, Types...>::types;
-    };
+        template <typename ResultCollection, typename... Types>
+        struct reverse_frame;
+
+        template <typename ResultCollection>
+        struct reverse_frame<ResultCollection>
+        {
+            using types = ResultCollection;
+        };
+
+        template <typename ResultCollection, typename T, typename... Types>
+        struct reverse_frame<ResultCollection, T, Types...>
+        {
+            using types = typename reverse_frame<typename ResultCollection::template push_front<T>, Types...>::types;
+        };
+
+    } // namespace detail
 
     template <typename... Types>
-    using reverse = typename reverse_frame<collection<>, Types...>::types;
+    using reverse = typename detail::reverse_frame<collection<>, Types...>::types;
 
 } // namespace variadic

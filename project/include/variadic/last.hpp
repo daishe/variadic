@@ -32,29 +32,38 @@ namespace variadic
     //     using type = typename last<Y, Types...>::type;
     // };
 
-    template <typename... Types>
-    struct last;
 
-    template <>
-    struct last<>
-    {};
-
-    template <typename T, typename... Types>
-    struct last<T, Types...>
+    namespace detail
     {
-        using type = typename at<sizeof...(Types), T, Types...>::type;
-    };
 
-    template <class Sequence, typename... Types>
-    struct not_last_frame;
+        template <typename... Types>
+        struct last_frame;
 
-    template <size_t... Idxs, typename... Types>
-    struct not_last_frame<std::index_sequence<Idxs...>, Types...>
-    {
-        using types = collection<typename at<Idxs, Types...>::type...>;
-    };
+        template <>
+        struct last_frame<>
+        {};
+
+        template <typename T, typename... Types>
+        struct last_frame<T, Types...>
+        {
+            using type = typename at<sizeof...(Types), T, Types...>::type;
+        };
+
+        template <class Sequence, typename... Types>
+        struct not_last_frame;
+
+        template <size_t... Idxs, typename... Types>
+        struct not_last_frame<std::index_sequence<Idxs...>, Types...>
+        {
+            using types = collection<typename at<Idxs, Types...>::type...>;
+        };
+
+    } // namespace detail
 
     template <typename... Types>
-    using not_last = typename not_last_frame<std::make_index_sequence<sizeof...(Types) - 1>, Types...>::types;
+    using last = detail::last_frame<Types...>;
+
+    template <typename... Types>
+    using not_last = typename detail::not_last_frame<std::make_index_sequence<sizeof...(Types) - 1>, Types...>::types;
 
 } // namespace variadic
