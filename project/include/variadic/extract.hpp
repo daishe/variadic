@@ -12,6 +12,9 @@ namespace variadic
     {
 
         template <typename T>
+        using none = T;
+
+        template <typename T>
         using type = typename T::type;
 
         template <typename T>

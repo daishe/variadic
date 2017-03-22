@@ -11,8 +11,8 @@
 
 BOOST_AUTO_TEST_CASE( variadic_reverse )
 {
-    static_assert(std::is_same<variadic::reverse<>, variadic::collection<>>::value, "Invalid reversion of collection for variadic::reverse");
-    static_assert(std::is_same<variadic::reverse<char>, variadic::collection<char>>::value, "Invalid reversion of collection for variadic::reverse");
-    static_assert(std::is_same<variadic::reverse<int, char>, variadic::collection<char, int>>::value, "Invalid reversion of collection for variadic::reverse");
-    static_assert(std::is_same<variadic::reverse<float, int, char>, variadic::collection<char, int, float>>::value, "Invalid reversion of collection for variadic::reverse");
+    static_assert(std::is_same<variadic::reverse<>::types, variadic::collection<>>::value, "Invalid reversion of collection for variadic::reverse");
+    static_assert(std::is_same<variadic::reverse<char>::types, variadic::collection<char>>::value, "Invalid reversion of collection for variadic::reverse");
+    static_assert(std::is_same<variadic::reverse<int, char>::types, variadic::collection<char, int>>::value, "Invalid reversion of collection for variadic::reverse");
+    static_assert(std::is_same<variadic::reverse<float, int, char>::types, variadic::collection<char, int, float>>::value, "Invalid reversion of collection for variadic::reverse");
 }

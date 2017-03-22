@@ -6,6 +6,7 @@
 #pragma once
 
 #include <variadic/collection.hpp>
+#include <variadic/def.hpp>
 
 namespace variadic
 {
@@ -14,23 +15,26 @@ namespace variadic
     {
 
         template <typename ResultCollection, typename... Types>
-        struct reverse_frame;
+        struct reverse_impl;
 
         template <typename ResultCollection>
-        struct reverse_frame<ResultCollection>
+        struct reverse_impl<ResultCollection>
         {
             using types = ResultCollection;
         };
 
         template <typename ResultCollection, typename T, typename... Types>
-        struct reverse_frame<ResultCollection, T, Types...>
+        struct reverse_impl<ResultCollection, T, Types...>
         {
-            using types = typename reverse_frame<typename ResultCollection::template push_front<T>, Types...>::types;
+            using types = typename reverse_impl<typename ResultCollection::template push_front<T>, Types...>::types;
         };
 
     } // namespace detail
 
     template <typename... Types>
-    using reverse = typename detail::reverse_frame<collection<>, Types...>::types;
+    struct reverse
+    {
+        using types = typename detail::reverse_impl<collection<>, Types...>::types;
+    };
 
 } // namespace variadic
